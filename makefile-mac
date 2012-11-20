@@ -1,0 +1,19 @@
+CC = g++
+CXXFLAGS = -g -ggdb
+OBJECTS = main.o VizGt.o XmlLoader.o XmlLoader4Viper.o TrackedObject.o XmlLoader4Subito.o XmlLoader4Iscaps.o TracksLoader4LeedsBagDetector.o cvgDB.o cvgDBFactory.o cvgMySQL.o
+INCLUDES = -I/opt/local/include/opencv -I/opt/local/include/ -I/opt/local/include/libxml2 -I/opt/local/include/mysql5/mysql
+LIB_PATH = -L/opt/local/lib
+LIBS = -lxml2 -lopencv_legacy -lopencv_core -lopencv_highgui -lmysqlpp
+VPATH = database
+
+all : $(OBJECTS)
+	${CC} ${CFLAGS} ${INCLUDES} -g -o viz ${OBJECTS} ${LIB_PATH} ${LIBS}
+
+%.o : %.cpp
+	$(CC) $(CFLAGS) ${INCLUDES} -c -g $<
+	
+%.o : %.cc
+	$(CC) $(CFLAGS) ${INCLUDES} -c -g $<
+
+clean:
+	-rm -f *.o viz
