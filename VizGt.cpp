@@ -704,6 +704,7 @@ void viz_gt::VizGt::DrawArObjectsOntoImage(){
 }
 
 void viz_gt::VizGt::OutputGtTracks(){
+	cout << BASH_ESC_RED << "	Now Output GT Tracks to CSV File" << BASH_ESC_WHITE << endl;
 	ofstream outfile, bbfile;
 	
 	outfile.open("tracks/tracks.csv");
