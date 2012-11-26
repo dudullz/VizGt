@@ -24,11 +24,11 @@ int main( int argc, char* argv[] ){
 	else
 		viz->LoadDataFromXml();
 	
+
 	viz->OutputGtTracks();
-	
+		
+	/// if corresponding files not specified in the config file, the following functions do NOTHING!
 	viz->OutputGtToSubitoXml();
-	
-	
 	viz->OutputGtToViperXml();
 	viz->OutputArToViperXml();
 	

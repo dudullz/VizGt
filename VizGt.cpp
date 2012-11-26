@@ -275,9 +275,14 @@ void viz_gt::VizGt::ParseConfigFile( char* config_file)
 			confFile >> m_tracks_file_path;
 		}
 		
-		if(command.find("OUTPUT_XMLFILE_IN_SUBITO_FORMAT") != std::string::npos )
+		if(command.find("OUTPUT_GT_IN_SUBITO_FORMAT") != std::string::npos )
 		{
-			confFile >> m_output_xml_file_subito;
+			confFile >> m_output_gt_in_subito_format;
+		}
+		
+		if(command.find("OUTPUT_AR_IN_SUBITO_FORMAT") != std::string::npos )
+		{
+			confFile >> m_output_ar_in_subito_format;
 		}
 		
 		if(command.find("OUTPUT_GT_IN_VIPER_FORMAT") != std::string::npos )
@@ -462,8 +467,8 @@ void viz_gt::VizGt::ParseConfigFile( char* config_file)
 			break;
 	}
 	
-	cout << BASH_ESC_RED << "m_output_xml_file_subito:\t" << BASH_ESC_YELLOW << m_output_xml_file_subito << endl;
-	cout << "full file length: " << m_output_xml_file_subito.size() << endl;
+	cout << BASH_ESC_RED << "m_output_gt_in_subito_format:\t" << BASH_ESC_YELLOW << m_output_gt_in_subito_format << endl;
+	cout << "full file length: " << m_output_gt_in_subito_format.size() << endl;
 	
 	cout << BASH_ESC_RED << "m_output_gt_in_viper_format:\t" << BASH_ESC_YELLOW << m_output_gt_in_viper_format << endl;
 	cout << "full file length: " << m_output_gt_in_viper_format.size() << endl;
@@ -736,14 +741,14 @@ void viz_gt::VizGt::OutputGtTracks(){
 void viz_gt::VizGt::OutputGtToSubitoXml(){
 	xmlTextWriterPtr writer;
 	
-	if( m_output_xml_file_subito.size() == 0 )
+	if( m_output_gt_in_subito_format.size() == 0 )
 	{
 		cout << BASH_ESC_RED << "	| SUBITO xml output file is not specified - No Action for Output |" << BASH_ESC_WHITE << endl;
 		return;
 	}else
-		cout << BASH_ESC_PURPLE << "	NOTE: Now outputing GT to xml file in SUBITO format: " << m_output_xml_file_subito << BASH_ESC_WHITE << endl;
+		cout << BASH_ESC_PURPLE << "	NOTE: Now outputing GT to xml file in SUBITO format: " << m_output_gt_in_subito_format << BASH_ESC_WHITE << endl;
 	
-	writer = xmlNewTextWriterFilename( m_output_xml_file_subito.c_str(), 0);
+	writer = xmlNewTextWriterFilename( m_output_gt_in_subito_format.c_str(), 0);
 	
 	//write subito headers
 	int ret = xmlTextWriterStartDocument(writer, NULL, MY_ENCODING, NULL);

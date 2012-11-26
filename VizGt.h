@@ -38,8 +38,9 @@ namespace viz_gt {
 		int m_name_num_digit;
 		string m_full_file_name;
 		string m_tracks_file_path;	//track file for leeds bag detector
-		string m_output_xml_file_subito;
 		
+		string m_output_gt_in_subito_format;
+		string m_output_ar_in_subito_format;
 		string m_output_gt_in_viper_format;
 		string m_output_ar_in_viper_format;
 		
