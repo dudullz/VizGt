@@ -1,4 +1,25 @@
+/**
+ * @brief ...
+ * Facts about ViPER format:
+ * 1. What kind of frames are considered to be 'visible'?
+ * A: any frame that listed in the value of object's attribute 'framespan'
+ * 
+ * 2. The number of frames which contains real object (e.g. bounding boxes for that object) can be larger than visible frames.
+ *    i.e. not all annotated frame is visible
+ * 
+ * 3. On the other hand, a visible frame can contain an empty object. i.e. the corresponding m_visible_index[i] == -1
+ *    However this mostly likely due to an annotation error and really SHOULD NOT HAPPEN.
+ *
+ * 4. In another word, IDEALLY, COUNT( m_visible_index[i] != -1 ) should equal to COUNT ( m_elements )
+ * 
+ * 5. Because tuple {m_framespans, m_visible_index} is worked out separately from tuple {m_elements, m_elements_index}
+ *    And there is no cross validation done between these two tuples.
+ **/
+
+
+
 #include "XmlLoader4Viper.h"
+
 
 xml_loader::XmlLoader4Viper::XmlLoader4Viper(){
 	m_start_data_tag = false;
@@ -12,7 +33,7 @@ xml_loader::XmlLoader4Viper::XmlLoader4Viper(){
 	
 	/// llz 2012-10-04
 	/// somehow the (x,y) seems to be the center of the person, rather than pointing to the top left corner!
-	m_is_viper_format_from_anna = true;
+	m_is_viper_format_from_anna = false;
 	
 	m_num_object = 0;
 	m_num_frames = 0;
@@ -84,18 +105,22 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 					objects.push_back( obj );
 					m_num_object++;
 					
+					cout << BASH_ESC_CYAN << "  Last Summary" << BASH_ESC_WHITE << endl;
 					cout << "Frame elements include: " << obj->m_elements.size() << endl;
 					cout << obj->m_framespans.size() << " Spans,";
 					cout << "Visible frames: " << obj->m_visible_num << endl;
-	//				for (int i = 0; i < obj->m_framespans.size(); ++i) {
-	//					cout << "	" << obj->m_framespans.at(i).start_fid;
-	//					cout << "	" << obj->m_framespans.at(i).end_fid << endl;
-	//				}
-	//				for (int i = 0; i < obj->m_elements_index.size(); ++i) {
-	//					cout << "Frame: " << i;
-	//					cout << "	Index: " << obj->m_elements_index[i];
-	//					cout << "	Visible: " << boolalpha << obj->m_visible_index[i] << endl;
-	//				}
+// 					for (int i = 0; i < obj->m_framespans.size(); ++i) {
+// 						cout << "	" << obj->m_framespans.at(i).start_fid;
+// 						cout << "	" << obj->m_framespans.at(i).end_fid << endl;
+// 					}
+// 					for (int i = 0; i < obj->m_elements_index.size(); ++i) {
+// 						if( obj->m_elements_index[i] != -1 )
+// 						{
+// 							cout << "Frame: " << i;
+// 							cout << "	Index: " << obj->m_elements_index[i];
+// 							cout << "	Visible: " << boolalpha << obj->m_visible_index[i] << endl;
+// 						}
+// 					}
 					cout << "Object Name:" << obj->m_name << endl;
 					cout << "Object Type:" << obj->m_type << endl << endl;
 				}
@@ -195,17 +220,19 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 				}
 				
 				if( diff == 1 ){
+// 					cout << BASH_ESC_CYAN << fs << BASH_ESC_WHITE << endl;
 					elem.frame_id = s;
 					obj->m_elements_index[s] = obj->m_elements.size();
 					obj->m_elements.push_back( elem );					
 				}
 				
 				if( diff > 1 ){
-// 					for (int j = 0; j < diff; ++j) {
-// 						elem.frame_id = s + j;
-// 						obj->m_elements_index[s+j] = obj->m_elements.size();
-// 						obj->m_elements.push_back( elem );
-// 					}
+// 					cout << BASH_ESC_PURPLE << "  " << fs << BASH_ESC_WHITE << endl;
+					for (int j = 0; j < diff; ++j) {
+						elem.frame_id = s + j;
+						obj->m_elements_index[s+j] = obj->m_elements.size();
+						obj->m_elements.push_back( elem );
+					}
 				}
 			}
 		}		
@@ -237,7 +264,7 @@ void xml_loader::XmlLoader4Viper::GetFramespansForTrackedObject( char* str, Trac
 		ts.end_fid = e_fid;
 		object->m_framespans.push_back( ts );	
 		spans = spans.substr( idx + 1 );
-//		cout << segment << "	" << spans << endl;
+		cout << segment << "	" << spans << endl;
 		idx = spans.find_first_of(" ");
 	}
 	
@@ -253,7 +280,7 @@ void xml_loader::XmlLoader4Viper::GetFramespansForTrackedObject( char* str, Trac
 	cout << "There are " << num_spans << " spans." << endl;
 	for(int i = 0; i < num_spans; ++i)
 	{
-		cout << "No. " << i << ":" << object->m_framespans.at(i).start_fid << " - " << object->m_framespans.at(i).end_fid << endl;
+		cout << "  Span " << i << ":" << object->m_framespans.at(i).start_fid << " - " << object->m_framespans.at(i).end_fid << endl;
 	}
 }
 

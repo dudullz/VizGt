@@ -17,12 +17,13 @@
 #include <iostream>
 using namespace std;
 
-#define BASH_ESC_BLUE  "\033[1;34m"
 #define BASH_ESC_WHITE "\033[00m"
 #define BASH_ESC_RED   "\033[1;31m"
-#define BASH_ESC_YELLOW "\033[1;33m"
 #define BASH_ESC_GREEN  "\033[1;32m"
+#define BASH_ESC_YELLOW "\033[1;33m"
+#define BASH_ESC_BLUE  "\033[1;34m"
 #define BASH_ESC_PURPLE  "\033[1;35m"
+#define BASH_ESC_CYAN  "\033[1;36m"
 
 #define GT_COLOUR	CV_RGB(0, 255, 0)	//green
 #define AR_COLOUR	CV_RGB(0, 0, 255)	//blue
