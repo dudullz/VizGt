@@ -716,20 +716,32 @@ void viz_gt::VizGt::OutputGtTracks(){
 	int obj_num = m_tracked_objects_gt.size();
 	for (int i = 0; i < obj_num; ++i) {
 		TrackedObject* cur_object = m_tracked_objects_gt.at(i);
-		int s_fid = cur_object->m_framespans[0].start_fid;
-		int e_fid = cur_object->m_framespans[0].end_fid;
-		outfile << cur_object->m_id << "," << s_fid << "," << e_fid << endl; 
+		int id = cur_object->m_id;
+		int numSpan = cur_object->m_framespans.size();
+		string name = cur_object->m_name;
+		cout << BASH_ESC_CYAN << "	=== Object " << id << " (" << name << ", Span Number:" << numSpan << ") ===" << BASH_ESC_WHITE << endl;
+		int sum = 0;
+		for(int sc = 0; sc < numSpan; ++sc)
+		{
+			int s_fid = cur_object->m_framespans[sc].start_fid;
+			int e_fid = cur_object->m_framespans[sc].end_fid;
+			printf("Span:%d (%d-%d)\n", sc, s_fid, e_fid);
+			outfile << cur_object->m_id << "," << s_fid << "," << e_fid << endl;
+			
+			int diff = e_fid - s_fid + 1;
+			sum += diff;
+		}
 		
 		char path[64];
 		sprintf(path, "tracks/%d_BB.dat", cur_object->m_id);
 		bbfile.open(path);	//output bounding box
-		int n = cur_object->m_elements.size();
-		int diff = e_fid - s_fid + 1;
-		assert( diff == n );
+		int n = cur_object->m_elements.size();		
+		printf("Sum of Spans:%d Vs. Total Element Number:%d\n", sum, n);
+		assert( sum == n );
 		for (int j = 0; j < n; ++j) {
 			Element elm = cur_object->m_elements.at(j);
-			bbfile << elm.frame_id << "," << elm.m_x_3d << "," << elm.m_y_3d << "," << elm.m_z_3d << endl;
-//            bbfile << elm.x << "," << elm.y << "," << elm.width << "," << elm.height << endl;
+// 			bbfile << elm.frame_id << "," << elm.m_x_3d << "," << elm.m_y_3d << "," << elm.m_z_3d << endl;
+           bbfile << elm.frame_id << "," << elm.x << "," << elm.y << "," << elm.width << "," << elm.height << endl;
 		}
 		bbfile.close();
 	}

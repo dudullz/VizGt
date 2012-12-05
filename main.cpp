@@ -25,7 +25,7 @@ int main( int argc, char* argv[] ){
 		viz->LoadDataFromXml();
 	
 
-// 	viz->OutputGtTracks();
+	viz->OutputGtTracks();
 		
 	/// if corresponding files not specified in the config file, the following functions do NOTHING!
 	viz->OutputGtToSubitoXml();

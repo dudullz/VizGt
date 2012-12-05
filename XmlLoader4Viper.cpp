@@ -176,7 +176,7 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 			if( m_start_object_tag && m_is_index_attribute )
 			{
 				m_attri = xmlTextReaderGetAttribute( m_reader, BAD_CAST "value");
-				//obj->m_id = atoi( (char*)m_attri );
+				obj->m_id = atoi( (char*)m_attri );
 			}
 			if( m_start_file_tag && m_is_numframes_attribute )
 			{
@@ -212,12 +212,33 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 				elem.x = atoi( (char*)m_attri );
 				m_attri = xmlTextReaderGetAttribute( m_reader, BAD_CAST "y");
 				elem.y = atoi( (char*)m_attri );
-				
+								
 				if(m_is_viper_format_from_anna)
 				{
 					elem.x = elem.x - (int)(elem.width/2);
 					elem.y = elem.y - (int)(elem.height/2);
 				}
+				
+				/// check coords sanity
+				if(elem.x < 0)
+				{
+					elem.width = elem.width + elem.x -1;
+					elem.x = 0;
+				}
+				if(elem.y < 0)
+				{
+					elem.height = elem.height + elem.y - 1;
+					elem.y = 0;
+				}
+				int rightSide = elem.x + elem.width;
+				int bottomSide = elem.y + elem.height;
+				/// 704x576 is the image size for elsag seqeunces!
+				if( rightSide > 703 )
+				{
+					elem.width = 703 - elem.x;
+				}
+				if( bottomSide > 575 )
+					elem.height = 575 - elem.y;				
 				
 				if( diff == 1 ){
 // 					cout << BASH_ESC_CYAN << fs << BASH_ESC_WHITE << endl;
