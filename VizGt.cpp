@@ -711,7 +711,7 @@ void viz_gt::VizGt::DrawArObjectsOntoImage(){
 }
 
 void viz_gt::VizGt::OutputGtTracks(){
-	cout << BASH_ESC_RED << "	Now Output GT Tracks to CSV File" << BASH_ESC_WHITE << endl;
+	cout << BASH_ESC_RED << "	Now Output GT Tracks to CSV File - Object based" << BASH_ESC_WHITE << endl;
 	ofstream outfile, bbfile;
 	
 	outfile.open("tracks/tracks.csv");
@@ -750,6 +750,35 @@ void viz_gt::VizGt::OutputGtTracks(){
 	
 	outfile.close();
     getchar();
+}
+
+void viz_gt::VizGt::OutputGtTracksFrameBased(){
+	cout << BASH_ESC_YELLOW << "	Now Output GT Tracks to CSV File - Frame-based" << BASH_ESC_WHITE << endl;
+	ofstream outfile;
+	
+	int frnogt =  m_xml_parser_gt->GetTotalFrameNum();
+	int frnoar =  m_xml_parser_ar->GetTotalFrameNum();
+	assert( frnogt == frnoar );
+	
+	outfile.open("tracks/tracks-framebased.csv");
+	for (int fid = 0; fid < frnogt; ++fid)
+	{
+		int obj_num = m_tracked_objects_gt.size();
+		for (int n = 0; n < obj_num; ++n) {
+			TrackedObject* cur_object = m_tracked_objects_gt.at(n);
+			int id = cur_object->m_id;
+			int idx = cur_object->m_elements_index[fid];
+			if ( idx != -1) {
+				Element elm = cur_object->m_elements.at(idx);
+				outfile << fid << "," << id << "," << elm.x << "," << elm.y << "," << elm.width << "," << elm.height << ",-1" << endl;
+//				outfile << cur_object->m_total_frame_num << "," << fid << "," << elm.frame_id << "," << id << "," << elm.x << "," << elm.y << "," << elm.width << "," << elm.height << ", -1" << endl;
+
+			}
+		}
+	}
+	
+	outfile.close();
+	getchar();
 }
 
 void viz_gt::VizGt::OutputGtToSubitoXml(){

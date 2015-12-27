@@ -14,6 +14,8 @@
  * 
  * 5. Because tuple {m_framespans, m_visible_index} is worked out separately from tuple {m_elements, m_elements_index}
  *    And there is no cross validation done between these two tuples.
+ *
+ * 6. Viper has the convention to have fid starting from 1. Therefore in this implementaion, the Total Frame Number, e.g. m_num_frames and TrackedObject::m_total_frame_num equals to the total number plus 1. This way, the first element in relevant vectors is not used. i.e. TrackedObject::m_elements_index[0], TrackedObject::m_visible_index[0] etc.
  **/
 
 
@@ -77,7 +79,7 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 		{
 			// only Person/PERSON object is to be added
 			m_attri = xmlTextReaderGetAttribute( m_reader, BAD_CAST "name");
-			if( !strcmp((char*)m_attri, "Person") || !strcmp((char*)m_attri, "PERSON") )			
+			if( !strcmp((char*)m_attri, "Person") || !strcmp((char*)m_attri, "PERSON") || !strcmp((char*)m_attri, "Target"))
 			{	
 				m_start_object_tag = !m_start_object_tag;
 				if( m_start_object_tag )
@@ -97,9 +99,10 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 					GetVisibleElementNum( obj );
 					cout << "Visible frames: " << obj->m_visible_num << endl;
 					
-					//following two lines should be replaced by value of Index!!!
+					// following two lines should be replaced by value of Index!!!
+					// By default Viper has a 'id' attribute starting from 0, and the value is unchangable!
 					m_attri = xmlTextReaderGetAttribute( m_reader, BAD_CAST "id");
-					obj->m_id = atoi( (char*)m_attri );
+					obj->m_id = atoi( (char*)m_attri ) + 1;
 				}else {
 					obj->m_total_frame_num = m_num_frames;
 					objects.push_back( obj );
@@ -147,7 +150,7 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 			}else	if( !strcmp((char*)m_attri, "Index") )
 			{
 				m_is_index_attribute = true;
-			}else	if( !strcmp((char*)m_attri, "Location") || !strcmp((char*)m_attri, "LOCATION") )
+			}else	if( !strcmp((char*)m_attri, "Location") || !strcmp((char*)m_attri, "LOCATION") || !strcmp((char*)m_attri, "BBox") )
 			{
 				m_is_location_attribute = true;
 			}else {
@@ -233,12 +236,12 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 				int rightSide = elem.x + elem.width;
 				int bottomSide = elem.y + elem.height;
 				/// 704x576 is the image size for elsag seqeunces!
-				if( rightSide > 703 )
-				{
-					elem.width = 703 - elem.x;
-				}
-				if( bottomSide > 575 )
-					elem.height = 575 - elem.y;				
+//				if( rightSide > 703 )
+//				{
+//					elem.width = 703 - elem.x;
+//				}
+//				if( bottomSide > 575 )
+//					elem.height = 575 - elem.y;				
 				
 				if( diff == 1 ){
 // 					cout << BASH_ESC_CYAN << fs << BASH_ESC_WHITE << endl;
@@ -246,7 +249,7 @@ void xml_loader::XmlLoader4Viper::ReadToTrackedObject( vector<TrackedObject*>& o
 					obj->m_elements_index[s] = obj->m_elements.size();
 					obj->m_elements.push_back( elem );					
 				}
-				
+				// same object being static for diff frames
 				if( diff > 1 ){
 // 					cout << BASH_ESC_PURPLE << "  " << fs << BASH_ESC_WHITE << endl;
 					for (int j = 0; j < diff; ++j) {

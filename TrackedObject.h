@@ -24,6 +24,7 @@ class TrackedObject{
 public:
 	int m_id;
 	int m_total_frame_num;	//total frame number of the sequence. should be the same for all objs!
+							// for Viper format, it equals the real frame number plus 1.
 	int m_visible_num;	//number of frames where this object is visible(in a user defined sense). should be m_visible_num <= m_elements.size()
     
 	string m_name;

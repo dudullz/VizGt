@@ -94,6 +94,7 @@ namespace viz_gt {
 		///////// Utility Functions /////////////
 		void GetFullFileName();
 		void OutputGtTracks();	//with Leeds bag detector format
+		void OutputGtTracksFrameBased();	//single csv file, in the format of: #fid,objID,x,y,w,h,-1
 		void OutputGtToSubitoXml();
 		
 		void OutputGtToViperXml();

@@ -28,6 +28,7 @@ int main( int argc, char* argv[] ){
 	
 
 	viz->OutputGtTracks();
+	viz->OutputGtTracksFrameBased();
 		
 	/// if corresponding files not specified in the config file, the following functions do NOTHING!
 	viz->OutputGtToSubitoXml();
