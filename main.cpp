@@ -19,9 +19,11 @@ int main( int argc, char* argv[] ){
 	//load xml file 
 	//parse xml file
 	//convert to internal data structure, i.e. TrackedObject
+#ifdef USE_MYSQL_INPUT
 	if( viz->ReadXMLSourceFromDB() )
 		viz->LoadDataFromMysql();
 	else
+#endif
 		viz->LoadDataFromXml();
 	
 

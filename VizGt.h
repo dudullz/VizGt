@@ -4,9 +4,10 @@
 #include "TrackedObject.h"
 #include "XmlLoader.h"
 
+#define USE_MYSQL_INPUT
+#ifdef USE_MYSQL_INPUT
 #include "database/cvgDB.h"
 #include "database/cvgDBFactory.h"
-
 typedef struct db_connection_t{
 	char* host_name;
 	unsigned int port;
@@ -17,6 +18,9 @@ typedef struct db_connection_t{
 }db_connection;
 
 using namespace cvg_database;
+
+#endif
+
 
 namespace viz_gt {
 	
@@ -47,12 +51,13 @@ namespace viz_gt {
 		bool m_display_gt_info;
 		bool m_display_ar_info;
 		
-		
+#ifdef USE_MYSQL_INPUT		
 		bool m_use_mysql_source;	//read xml results from MySQL database instead of xml files	
 		db_connection m_db_conn;
 		cvgDBFactory* m_fac;
 		cvgDB* m_db;
-	
+#endif
+		
 		int m_frame_counter;
 		
 //		IplImage* m_input_image;
@@ -96,9 +101,10 @@ namespace viz_gt {
 		void GetCompleteFrameSpanGT( string& result );
 		void GetCompleteFrameSpanAR( string& result );
 		
+#ifdef USE_MYSQL_INPUT
 		bool ReadXMLSourceFromDB(){ return m_use_mysql_source; };
-		
 		void InitialiseDatabase();
+#endif
 		
 		
 	};

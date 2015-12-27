@@ -181,9 +181,9 @@ viz_gt::VizGt::VizGt(){
 	m_frame_counter = 0;
 	m_display_gt_info = false;
 	m_display_ar_info = false;
-	
+#ifdef USE_MYSQL_INPUT
 	m_use_mysql_source = false;
-	
+#endif
 	m_gt_format = UNKNOWN;
 	m_ar_format = UNKNOWN;
 	
@@ -347,7 +347,7 @@ void viz_gt::VizGt::ParseConfigFile( char* config_file)
 		}
 		
 		
-		
+#ifdef USE_MYSQL_INPUT
 		if(command.find("READ_SOURCE_FROM_MYSQL") != std::string::npos )
 		{
 			m_use_mysql_source = true;
@@ -392,8 +392,10 @@ void viz_gt::VizGt::ParseConfigFile( char* config_file)
 			m_db_conn.table_name = new char[ tmp.size() ];
 			strcpy( m_db_conn.table_name, tmp.c_str() );
 		}
+#endif
+
 	}
-	
+#ifdef USE_MYSQL_INPUT
 	if( m_use_mysql_source )
 	{
 		cout << BASH_ESC_YELLOW << "DB_HOST:\t\t" << BASH_ESC_RED << m_db_conn.host_name << endl;
@@ -403,7 +405,7 @@ void viz_gt::VizGt::ParseConfigFile( char* config_file)
 		cout << BASH_ESC_YELLOW << "DB_NAME:\t\t" << BASH_ESC_RED << m_db_conn.db_name << endl;
 		cout << BASH_ESC_YELLOW << "DB_TABLE:\t\t" << BASH_ESC_RED << m_db_conn.table_name << endl;
 	}
-	
+#endif
 	cout << BASH_ESC_RED << "m_img_path:\t\t" << BASH_ESC_YELLOW << m_img_path << endl;
 	cout << BASH_ESC_RED << "m_img_name_base:	" << BASH_ESC_YELLOW << m_img_name_base << endl;
 	cout << BASH_ESC_RED << "m_name_num_digit:	" << BASH_ESC_YELLOW << m_name_num_digit << endl;
@@ -504,10 +506,9 @@ void viz_gt::VizGt::LoadDataFromXml(){
 //	cout << "done deal!!!!" << endl;
 }
 
+#ifdef USE_MYSQL_INPUT
 void viz_gt::VizGt::LoadDataFromMysql(){
 	InitialiseDatabase();
-	
-	
 }
 
 void viz_gt::VizGt::InitialiseDatabase()
@@ -534,6 +535,7 @@ void viz_gt::VizGt::InitialiseDatabase()
     delete m_fac;
   }
 }
+#endif
 
 void viz_gt::VizGt::DisplayImage(){
 	cout << "DisplayImage" << endl;
